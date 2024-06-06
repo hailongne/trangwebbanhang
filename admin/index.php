@@ -5,6 +5,7 @@ include "..//model/pdo.php";
 include "../model/taikhoan.php";
 include "../model/binhluan.php";
 include "../model/cart.php";
+include "../model/tintuc.php";
 include "header.php";
 
 
@@ -37,7 +38,7 @@ if (isset($_GET["act"])) {
                 $listsua = loadone_dm($_GET["id"]);
             }
             include "danhmuc/update.php";
-            
+
             break;
         case "updatedm":
             if (isset($_POST["capnhat"]) && ($_POST["capnhat"])) {
@@ -147,9 +148,94 @@ if (isset($_GET["act"])) {
             $listthongke = loadall_thongke();
             include "thongke/bieudo.php";
             break;
+            //tin tức
+        case 'addtintuc':
+            $tieu_de='';
+            $noi_dung='';
+            $iddm='';
+            $img='';
+            if (isset($_POST['them']) && $_POST['them']) { //chữ thêm đc lấy ở trang addtintuc chỗ nút thêm mới name =them
+
+                $tieude = $_POST['tieude'];
+                $noidung = $_POST['noidung'];
+                $id=$_POST['id'];
+                $iddm = $_POST['iddm'];
+
+                $img = $_FILES["img"]["name"];
+                $target_dir = "../upload/";
+                $target_file = $target_dir . basename($_FILES["img"]["name"]);
+                if (move_uploaded_file($_FILES["img"]["tmp_name"], $target_file)) {
+                    // echo "Image uploaded successfully";
+                } else {
+                    // echo "Image uploaded not successfully";
+                }
+                // $mota = $_POST["mota"];
+                insert_tintuc( $tieude, $noidung, $img, $iddm,$id);
+                
+                
+                $thongbao = "Thêm thành công";
 
 
 
+
+            }
+            $listdmtt = loadAll_dmtintuc();
+            include('tintuc/add.php');
+            break;
+        case 'listtintuc':
+            $listTinTuc = loadAll_TinTuc();
+            include('tintuc/listtintuc.php');
+        
+        case 'suatt':
+            $tieu_de='';
+            $noi_dung='';
+            $iddm='';
+            $img='';
+        if(isset($_GET['id']) && $_GET['id']>0){
+            $id=$_GET['id'];
+            //lấy ds dm tt
+            $listdm = loadAll_dmtintuc();
+            //lấy ttt theo id
+            $tintuc=loadTinTucById($id);
+            //var_dump($tintuc);
+include 'tintuc/update.php';
+        }
+        //nhap lai ở nâm=nhap lai
+        if(isset($_POST['capnhat']) && $_POST['capnhat']){
+            $id=$_POST['id'];
+            $tieu_de = $_POST['tentd'];
+            $noi_dung = $_POST['mota'];
+            $iddm = $_POST['iddm'];
+            $img = $_FILES["img"]["name"];
+            $target_dir = "../upload/";
+            $target_file = $target_dir . basename($_FILES["img"]["name"]);
+            if (move_uploaded_file($_FILES["img"]["tmp_name"], $target_file)) {
+                // echo "Image uploaded successfully";
+            } else {
+                // echo "Image uploaded not successfully";
+            }
+            // $mota = $_POST["mota"];
+            capnhat_tintuc($tieu_de, $noi_dung, $img, $iddm,$id);
+            $thongbao = "Thêm thành công";
+            $listTinTuc = loadAll_TinTuc();
+            include('tintuc/listtintuc.php');
+            
+        }
+break;
+case "xoatt":
+    if (isset($_GET["id"]) && ($_GET["id"] > 0)) {
+        delete_TinTuc($_GET["id"]);
+    }
+    $listTinTuc = loadAll_TinTuc();
+    
+    //lấy ttt theo id
+    include "tintuc/listtintuc.php";
+    break;
+    
+
+
+        
+    
         default:
             include "home.php";
             break;

@@ -13,7 +13,7 @@
                         <option value="'.$id.'">'.$name.'</option>
                         ';
                        }
-                       ?>
+                       ?> 
                 </select>
                 <input type="submit" name="listok" value="GO">
                 </form>        
